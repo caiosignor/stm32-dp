@@ -13,12 +13,13 @@ class Pendulo
 private:
     TYPE x0, y0, old_x0, old_y0;
     TYPE x1, y1, old_x1, old_y1;
+    TYPE mass;
     TYPE l;
     TYPE2 a;
     color_t color;
 
 public:
-    Pendulo(TYPE x0, TYPE y0, TYPE l);
+    Pendulo(TYPE x0, TYPE y0, TYPE l, TYPE mass);
     void updatePosition();
     void draw();
 };

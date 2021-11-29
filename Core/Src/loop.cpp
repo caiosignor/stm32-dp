@@ -8,7 +8,7 @@
 #include "font5x8.h"
 #include "ILI9341_GFX.h"
 
-Pendulo p1(100, 120, 70);
+Pendulo p1(100, 120, 70,10);
 
 void setup()
 {
@@ -21,8 +21,8 @@ void setup()
 
 void loop()
 {
-    //ILI9341_Fill_Screen(WHITE);
     p1.updatePosition();
     p1.draw();
     hagl_flush();
+    HAL_Delay(10);
 }

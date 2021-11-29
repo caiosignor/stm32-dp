@@ -8,7 +8,7 @@
 #include "ILI9341_GFX.h"
 #include <stdio.h>
 
-Pendulo::Pendulo(TYPE x0, TYPE y0, TYPE l) : x0(x0), y0(y0), l(l)
+Pendulo::Pendulo(TYPE x0, TYPE y0, TYPE l, TYPE mass) : x0(x0), y0(y0), l(l), mass(mass)
 {
     this->a = PI / 2.0;
 
@@ -19,10 +19,11 @@ Pendulo::Pendulo(TYPE x0, TYPE y0, TYPE l) : x0(x0), y0(y0), l(l)
 
 void Pendulo::draw()
 {
-    hagl_draw_circle(this->x0, this->y0, 5, color);
-    hagl_draw_line(this->x0, this->y0, this->x0 + this->old_x1, this->y0 + this->old_y1, 0);
-    hagl_draw_line(this->x0, this->y0, this->x0 + this->x1, this->y0 + this->y1, color);
-    HAL_Delay(10);
+    hagl_draw_circle(this->x0, this->y0, 5, color); // fixed point
+    hagl_draw_line(this->x0, this->y0, this->x0 + this->old_x1, this->y0 + this->old_y1, 0); //erase the previous line
+    hagl_draw_line(this->x0, this->y0, this->x0 + this->x1, this->y0 + this->y1, color); //draw the new line
+    hagl_draw_circle(this->x0 + this->old_x1, this->y0 + this->old_y1, this->mass, 0); // erase the previous mass
+    hagl_draw_circle(this->x0 + this->x1, this->y0 + this->y1, this->mass, color); //draw the new mass
 }
 
 void Pendulo::updatePosition()
@@ -32,11 +33,4 @@ void Pendulo::updatePosition()
     this->old_y1 = this->y1;
     this->x1 = _sin(this->a) * l;
     this->y1 = _cos(this->a) * l;
-
-    //char str_x1[32], str_y1[32];
-    //sprintf(str_x1, "x1 = %.3f ", this->x1);
-    //sprintf(str_y1, "y1 = %.3f ", this->y1);
-//
-    //ILI9341_Draw_Text(str_x1, 100, 10, BLACK, 2, WHITE);
-    //ILI9341_Draw_Text(str_y1, 100, 50, BLACK, 2, WHITE);
 }
