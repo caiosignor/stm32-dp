@@ -19,9 +19,11 @@ void setup()
 
 void loop()
 {
+    p1.updateAngularAcceleration(&p2);
+    p2.updateAngularAcceleration();
     p1.updatePosition();
-    p1.draw();
     p2.updatePosition();
+    p1.draw();
     p2.draw();
     hagl_flush();
     HAL_Delay(10);

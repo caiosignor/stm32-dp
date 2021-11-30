@@ -3,14 +3,13 @@
 #include "hagl.h"
 #include "arm_math.h"
 #include "font5x7.h"
-#include <math.h>
 #include <stdlib.h>
 #include "ILI9341_GFX.h"
 #include <stdio.h>
 
 Pendulum::Pendulum(Pendulum *p, TYPE l, TYPE mass) : node(p), mass(mass), l(l)
 {
-    this->a = PI / 2;
+    this->angle = PI / 2;
     x0 = p->x1;
     y0 = p->y1;
     //a = p->a;
@@ -20,9 +19,9 @@ Pendulum::Pendulum(Pendulum *p, TYPE l, TYPE mass) : node(p), mass(mass), l(l)
 Pendulum::Pendulum(TYPE x0, TYPE y0, TYPE l, TYPE mass) : x0(x0), y0(y0), l(l), mass(mass)
 {
     node = nullptr;
-    this->a = PI / 2.0;
-    this->x1 = _sin(this->a) * l;
-    this->y1 = _cos(this->a) * l;
+    this->angle = PI / 2.0;
+    this->x1 = _sin(this->angle) * l;
+    this->y1 = _cos(this->angle) * l;
     this->color = rand() % 0xffff;
 };
 
@@ -45,6 +44,12 @@ void Pendulum::erasePreviousPendulum()
     hagl_draw_circle(_x0 + this->old_x1, _y0 + this->old_y1, this->mass, 0); // erase the previous mass
 }
 
+void Pendulum::updateAngle()
+{
+    this->angle += this->angular_velocity;
+    this->angular_velocity += this->angular_acceleration;
+}
+
 void Pendulum::updatePosition()
 {
     if (this->node != nullptr)
@@ -54,12 +59,27 @@ void Pendulum::updatePosition()
         this->x0 = this->node->x0 + this->node->x1 + this->node->mass;
         this->y0 = this->node->y0 + this->node->y1;
     }
-    else
-    {
-        this->a += 0.1;
-    }
+
+    this->updateAngle();
+
     this->old_x1 = this->x1;
     this->old_y1 = this->y1;
-    this->x1 = _sin(this->a) * l;
-    this->y1 = _cos(this->a) * l;
+    this->x1 = _sin(this->angle) * l;
+    this->y1 = _cos(this->angle) * l;
+}
+
+TYPE Pendulum::updateAngularAcceleration(Pendulum *p)
+{
+    this->angular_acceleration =
+        (-g * (2 * this->mass + p->mass) * _sin(this->angle) - p->mass * g * _sin(this->angle - 2 * p->angle) - 2 * _sin(this->angle - p->angle) * p->mass * (p->angular_velocity * p->angular_velocity * p->l + this->angular_velocity * this->angular_velocity * this->l * _cos(this->angle - p->angle))) / (this->l * (2 * this->mass + p->mass - p->mass * _cos(2 * this->angle - 2 * p->angle)));
+
+    return this->angular_acceleration;
+}
+
+TYPE Pendulum::updateAngularAcceleration()
+{
+    this->angular_acceleration =
+        ((2 * _sin(node->angle - this->angle)) * (node->angular_velocity * node->angular_velocity * node->l * (node->mass + this->mass) + g * (node->mass + this->mass) * _cos(node->angle) + this->angular_velocity * this->angular_velocity * this->l * this->mass * _cos(node->angle - this->angle))) / (this->l * (2 * node->mass + this->mass - this->mass * _cos(2 * node->angle - 2 * this->angle)));
+
+    return this->angular_acceleration;
 }
