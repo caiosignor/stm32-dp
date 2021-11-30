@@ -9,11 +9,12 @@
 
 Pendulum::Pendulum(Pendulum *p, TYPE l, TYPE mass) : node(p), mass(mass), l(l)
 {
-    this->angle = PI / 2;
+    this->angle = PI / 4.0;
     x0 = p->x1;
     y0 = p->y1;
-    //a = p->a;
     color = p->color + 255;
+    this->angular_acceleration = 0;
+    this->angular_velocity = 0;
 }
 
 Pendulum::Pendulum(TYPE x0, TYPE y0, TYPE l, TYPE mass) : x0(x0), y0(y0), l(l), mass(mass)
@@ -23,6 +24,8 @@ Pendulum::Pendulum(TYPE x0, TYPE y0, TYPE l, TYPE mass) : x0(x0), y0(y0), l(l), 
     this->x1 = _sin(this->angle) * l;
     this->y1 = _cos(this->angle) * l;
     this->color = rand() % 0xffff;
+    this->angular_acceleration = 0;
+    this->angular_velocity = 0;
 };
 
 void Pendulum::draw()
@@ -56,26 +59,24 @@ void Pendulum::updatePosition()
     {
         this->old_x0 = this->x0;
         this->old_y0 = this->y0;
-        this->x0 = this->node->x0 + this->node->x1 + this->node->mass;
-        this->y0 = this->node->y0 + this->node->y1;
+        this->x0 = this->node->x0 + this->node->x1;
+        this->y0 = this->node->y0 + this->node->y1 + this->node->mass;
     }
-
-    //this->updateAngle();
 
     this->old_x1 = this->x1;
     this->old_y1 = this->y1;
-    this->x1 = _sin(this->angle) * l;
-    this->y1 = _cos(this->angle) * l;
+    this->x1 = _sin(this->angle) * this->l;
+    this->y1 = _cos(this->angle) * this->l;
 }
 
 TYPE Pendulum::updateAngularAcceleration(Pendulum *p)
 {
 
-    TYPE num1 = -g * (2 * this->mass + p->mass) * sin(this->angle);
-    TYPE num2 = -p->mass * g * sin(this->angle - 2 * p->angle);
-    TYPE num3 = -2 * sin(this->angle - p->angle) * p->mass;
-    TYPE num4 = p->angular_velocity * p->angular_velocity * p->l + this->angular_velocity * this->angular_velocity * this->l * cos(this->angle - p->angle);
-    TYPE den = this->l * (2 * this->mass + p->mass - p->mass * cos(2 * this->angle - 2 * p->angle));
+    TYPE num1 = -g * (2.0 * this->mass + p->mass) * _sin(this->angle);
+    TYPE num2 = -p->mass * g * _sin(this->angle - 2.0 * p->angle);
+    TYPE num3 = -2.0 * _sin(this->angle - p->angle) * p->mass;
+    TYPE num4 = p->angular_velocity * p->angular_velocity * p->l + this->angular_velocity * this->angular_velocity * this->l * _cos(this->angle - p->angle);
+    TYPE den = this->l * (2.0 * this->mass + p->mass - p->mass * _cos(2.0 * this->angle - 2.0 * p->angle));
     this->angular_acceleration = (num1 + num2 + num3 * num4) / den;
 
     return this->angular_acceleration;
@@ -83,11 +84,11 @@ TYPE Pendulum::updateAngularAcceleration(Pendulum *p)
 
 TYPE Pendulum::updateAngularAcceleration()
 {
-    TYPE num1 = 2 * sin(node->angle - this->angle);
-    TYPE num2 = (node->angular_velocity * node->angular_velocity * this->l * (node->mass + this->mass));
-    TYPE num3 = g * (node->mass + this->mass) * cos(node->angle);
-    TYPE num4 = this->angular_velocity * this->angular_velocity * this->l * this->mass * cos(node->angle - this->angle);
-    TYPE den = this->l * (2 * node->mass + this->mass - this->mass * cos(2 * node->angle - 2 * this->angle));
+    TYPE num1 = 2.0 * _sin(node->angle - this->angle);
+    TYPE num2 = (node->angular_velocity * node->angular_velocity * node->l * (node->mass + this->mass));
+    TYPE num3 = g * (node->mass + this->mass) * _cos(node->angle);
+    TYPE num4 = this->angular_velocity * this->angular_velocity * this->l * this->mass * _cos(node->angle - this->angle);
+    TYPE den = this->l * (2.0 * node->mass + this->mass - this->mass * _cos(2.0 * node->angle - 2.0 * this->angle));
     this->angular_acceleration = (num1 * (num2 + num3 + num4)) / den;
     return this->angular_acceleration;
 }

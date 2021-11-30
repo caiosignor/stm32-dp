@@ -8,7 +8,7 @@
 #define _sin arm_sin_f32
 #define _cos arm_cos_f32
 
-#define g 1.0
+#define g 0.5
 
 class Pendulum
 {
