@@ -8,7 +8,7 @@
 #include "font5x8.h"
 #include "ILI9341_GFX.h"
 
-Pendulum p1(100, 120, 70, 10), p2(&p1, 50, 15);
+Pendulum p1(100, 120, 70, 15), p2(&p1, 70, 15);
 
 void setup()
 {
@@ -25,6 +25,8 @@ void loop()
     p2.updatePosition();
     p1.draw();
     p2.draw();
+    p1.updateAngle();
+    p2.updateAngle();
     hagl_flush();
-    HAL_Delay(10);
+    HAL_Delay(1);
 }

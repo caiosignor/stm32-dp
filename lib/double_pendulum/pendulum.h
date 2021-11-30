@@ -20,7 +20,6 @@ private:
     TYPE2 angle, angular_velocity, angular_acceleration;
     color_t color;
     void erasePreviousPendulum();
-    void updateAngle();
 
 public:
     Pendulum(TYPE x0, TYPE y0, TYPE l, TYPE mass);
@@ -28,6 +27,7 @@ public:
     void updatePosition();
     TYPE updateAngularAcceleration(Pendulum *p);
     TYPE updateAngularAcceleration();
+    void updateAngle();
     void draw();
 };
 
