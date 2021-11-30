@@ -1,5 +1,5 @@
-#ifndef PENDULO_HPP
-#define PENDULO_HPP
+#ifndef PENDULUM_HPP
+#define PENDULUM_HPP
 #include "arm_math.h"
 #include "hagl.h"
 
@@ -8,10 +8,10 @@
 #define _sin arm_sin_f32
 #define _cos arm_cos_f32
 
-class Pendulo
+class Pendulum
 {
 private:
-    Pendulo *node;
+    Pendulum *node;
     TYPE x0, y0, old_x0, old_y0;
     TYPE x1, y1, old_x1, old_y1;
     TYPE mass;
@@ -20,8 +20,8 @@ private:
     color_t color;
     void erasePreviousPendulum();
 public:
-    Pendulo(TYPE x0, TYPE y0, TYPE l, TYPE mass);
-    Pendulo(Pendulo *p, TYPE l, TYPE mass);
+    Pendulum(TYPE x0, TYPE y0, TYPE l, TYPE mass);
+    Pendulum(Pendulum *p, TYPE l, TYPE mass);
     void updatePosition();
     void draw();
 };

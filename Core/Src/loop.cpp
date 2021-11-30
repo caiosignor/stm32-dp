@@ -4,11 +4,11 @@
 #include "main.h"
 #include "ILI9341_STM32_Driver.h"
 #include "hagl.h"
-#include "pendulo.h"
+#include "pendulum.h"
 #include "font5x8.h"
 #include "ILI9341_GFX.h"
 
-Pendulo p1(100, 120, 70, 10), p2(&p1, 50, 15);
+Pendulum p1(100, 120, 70, 10), p2(&p1, 50, 15);
 
 void setup()
 {
