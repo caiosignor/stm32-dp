@@ -34,5 +34,5 @@ void loop()
 
 
     hagl_flush();
-    HAL_Delay(5);
+    HAL_Delay(1);
 }
